@@ -1,5 +1,5 @@
 {
-  "name": "UptickNotesApi",
+  "name": "uptick_notes_api",
   "version": "1.0.0",
   "description": "This is an API for managing user notes",
   "main": "index.js",
