@@ -1,7 +1,21 @@
-const app = require("express")();
-const routes = require("./routes");
 const db = require("./db");
+const app = require("express")();
+const applyMiddleware = require("./middleware");
+const applyRoutes = require("./routes");
+const {PORT,} = process.env;
 
-app.use(routes);
+// apply middleware
+app = applyMiddleware(app);
 
-app.listen("3000", () => console.log(`App running on port ${3000}`));
+// apply routes
+app = applyRoutes(app);
+
+db()
+    .then(() => {
+        console.log("database connected");
+        app.listen(PORT, () => console.log(`App running on port ${PORT}`));
+    })
+    .catch(err => {
+        console.error("error connecting to database %o", err);
+        process.exit(1);
+    });
