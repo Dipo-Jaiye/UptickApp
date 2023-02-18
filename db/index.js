@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { MONGO_URI, MONGO_USER, MONGO_PASS, MONGO_DB, } = process.env;
 
 module.exports = () => {
+    mongoose.set("strictQuery", true);
     return mongoose.connect(MONGO_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,

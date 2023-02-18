@@ -1,6 +1,6 @@
 module.exports = {
     errorHandler: (err, req, res, next) => {
-        let errStatusCode = err.statusCode ?? "400";
+        let errStatusCode = err.statusCode ?? 400;
         let errJson = {
             error: true,
             message: err.message ?? "Unknown error",

@@ -26,13 +26,7 @@ module.exports = {
             if (email) {
                 email = validator.trim(validator.blacklist(email, `<>&"/' `));
                 if (validator.isEmail(email)) {
-                    email = validator.normalizeEmail(email);
-                    if (await User.exists({ email: email }) !== null) {
-                        const err = new Error("Email already exists");
-                        err.statusCode = 400;
-                        return next(err);
-                    }
-                    req.body.email = email;
+                    req.body.email = validator.normalizeEmail(email);
                 } else {
                     const err = new Error("Invalid email");
                     err.statusCode = 400;
@@ -61,6 +55,22 @@ module.exports = {
             return next();
         } catch (err) {
             console.error("Error while validating credentials: %o", err);
+            return next(err);
+        }
+    },
+
+    emailExists: async (req, res, next) => {
+        try {
+            let { body, } = req;
+            let { email, } = body;
+            if (await User.exists({ email: email }) !== null) {
+                const err = new Error("Email already exists");
+                err.statusCode = 400;
+                return next(err);
+            }
+            return next();
+        } catch (err) {
+            console.error("Error while validating email exists: %o", err);
             return next(err);
         }
     },

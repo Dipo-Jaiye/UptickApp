@@ -1,6 +1,43 @@
 const validator = require("validator");
 const { ObjectId } = require("mongoose").Types;
 
+const idValidator = (req, res, next) => {
+    try {
+        let { params, } = req;
+
+        if (params.id !== undefined && params.id !== null && params.id !== "") {
+            params.id = validator.trim(validator.whitelist(params.id, "0-9a-fA-F"));
+
+            if (!validator.isLength(params.id, { min: 24, max: 24 })) {
+                console.error(`Invalid note id: ${params.id}`);
+                const err = new Error("Invalid note id");
+                err.statusCode = 400;
+                return next(err);
+            }
+
+            const newId = new ObjectId(params.id);
+            if (newId.toString() !== params.id) {
+                console.error(`Invalid note id: ${params.id}`);
+                const err = new Error("Invalid note id");
+                err.statusCode = 400;
+                return next(err);
+            }
+
+            req.params.id = params.id;
+
+            return next();
+        } else {
+            const err = new Error("Note id is required for update");
+            err.statusCode = 400;
+            return next(err);
+        }
+
+    } catch (err) {
+        console.error("Error occurred while validating note id: %o", err);
+        return next(err);
+    }
+};
+
 module.exports = {
     textValidator: (req, res, next) => {
         try {
@@ -28,7 +65,7 @@ module.exports = {
             let { page, size, } = query;
 
             if (params.id !== undefined && params.id !== null && params.id !== "") {
-                return this.idValidator(req, res, next);
+                return idValidator(req, res, next);
             }
 
             delete params.id;
@@ -62,7 +99,7 @@ module.exports = {
                 }
                 req.query.size = size;
             } else {
-                req.query.size = 1;
+                req.query.size = 20;
             }
 
             return next();
@@ -72,40 +109,5 @@ module.exports = {
         }
     },
 
-    idValidator: (req, res, next) => {
-        try {
-            let { params, } = req;
-
-            if (params.id !== undefined && params.id !== null && params.id !== "") {
-                params.id = validator.trim(validator.whitelist(params.id, "0-9a-fA-F"));
-
-                if (!validator.isLength(params.id, { min: 24, max: 24 })) {
-                    console.error(`Invalid note id: ${params.id}`);
-                    const err = new Error("Invalid note id");
-                    err.statusCode = 400;
-                    return next(err);
-                }
-
-                const newId = new ObjectId(params.id);
-                if (newId.toString() !== params.id) {
-                    console.error(`Invalid note id: ${params.id}`);
-                    const err = new Error("Invalid note id");
-                    err.statusCode = 400;
-                    return next(err);
-                }
-
-                req.params.id = params.id;
-
-                return next();
-            } else {
-                const err = new Error("Note id is required for update");
-                err.statusCode = 400;
-                return next(err);
-            }
-
-        } catch (err) {
-            console.error("Error occurred while validating note id: %o", err);
-            return next(err);
-        }
-    },
+    idValidator,
 };

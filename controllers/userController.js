@@ -58,8 +58,6 @@ module.exports = {
                     return next(err);
                 }
 
-                console.log("user is %o", user);
-
                 return res.status(201).json({ error: false, message: "success", data: user });
             });
         } catch (err) {

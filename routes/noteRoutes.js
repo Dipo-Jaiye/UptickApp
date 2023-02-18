@@ -4,6 +4,7 @@ const { idValidator, getValidator, textValidator, } = require("./validators/note
 
 router.post("/", textValidator, create);
 router.get("/:id", getValidator, read);
+router.get("/", getValidator, read);
 router.put("/:id", idValidator, textValidator, update);
 router.delete("/:id", idValidator, remove);
 

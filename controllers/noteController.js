@@ -18,7 +18,7 @@ module.exports = {
                         return next(err);
                     }
 
-                    //await note.populate("author", "name");
+                    await note.populate("author", "name");
 
                     return res.status(201).json({
                         error: false,
@@ -44,7 +44,8 @@ module.exports = {
 
             if (params.id !== undefined && params.id !== null && params.id !== "") {
 
-                let note = await Note.findOne({ _id: params.id, author: user._id }).lean();
+                let note = await Note.findOne({ _id: params.id, author: user._id }).lean()
+                    .populate("author", "name");
                 if (!note) {
                     const err = new Error("Note not found");
                     err.statusCode = 404;
@@ -64,7 +65,8 @@ module.exports = {
                 .lean()
                 .sort({ createdAt: -1 })
                 .skip((page - 1) * size)
-                .limit(size);
+                .limit(size)
+                .populate("author", "name");
 
             if (!notes) {
                 const err = new Error("Notes not found");
@@ -80,7 +82,7 @@ module.exports = {
     },
 
     // update
-    update: async (req, res, next) => {
+    update: (req, res, next) => {
         try {
             let { user, params, body, } = req;
 
@@ -89,13 +91,15 @@ module.exports = {
                     $set: {
                         text: body.text
                     }
-                })
-                .then(note => {
+                }, { new: true })
+                .then(async note => {
                     if (!note) {
                         const err = new Error("Note not found");
                         err.statusCode = 404;
                         return next(err);
                     }
+
+                    await note.populate("author", "name");
 
                     return res.status(200).json({ error: false, message: "success", data: note });
                 })
@@ -116,12 +120,14 @@ module.exports = {
             let { user, params, } = req;
 
             Note.findOneAndDelete({ _id: params.id, author: user._id })
-                .then(note => {
+                .then(async note => {
                     if (!note) {
                         const err = new Error("Note not found");
                         err.statusCode = 404;
                         return next(err);
                     }
+
+                    await note.populate("author", "name");
 
                     return res.status(200).json({ error: false, message: "success", data: note });
                 })

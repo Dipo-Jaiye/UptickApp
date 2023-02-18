@@ -1,5 +1,5 @@
 const db = require("./db");
-const app = require("express")();
+let app = require("express")();
 const applyMiddleware = require("./middleware");
 const applyRoutes = require("./routes");
 const {PORT,} = process.env;

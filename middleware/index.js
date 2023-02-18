@@ -2,7 +2,7 @@ const { json, urlencoded, } = require("express");
 const cors = require("cors");
 const passport = require("passport");
 const { passjwt, } = require("../controllers/userController");
-const User = require("../models/User");
+const User = require("../models/user");
 
 module.exports = (app) => {
     app.use(cors());
