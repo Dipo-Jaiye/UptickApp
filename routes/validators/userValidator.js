@@ -1,4 +1,5 @@
 const validator = require("validator");
+const User = require("../../models/user");
 
 module.exports = {
     nameValidator: (req, res, next) => {
@@ -18,14 +19,20 @@ module.exports = {
         }
     },
 
-    credentialValidator: (req, res, next) => {
+    credentialValidator: async (req, res, next) => {
         try {
             let { body, } = req;
             let { email, password, } = body;
             if (email) {
                 email = validator.trim(validator.blacklist(email, `<>&"/' `));
                 if (validator.isEmail(email)) {
-                    req.body.email = validator.normalizeEmail(email);
+                    email = validator.normalizeEmail(email);
+                    if (await User.exists({ email: email }) !== null) {
+                        const err = new Error("Email already exists");
+                        err.statusCode = 400;
+                        return next(err);
+                    }
+                    req.body.email = email;
                 } else {
                     const err = new Error("Invalid email");
                     err.statusCode = 400;
