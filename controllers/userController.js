@@ -79,8 +79,6 @@ module.exports = {
                     return next(err);
                 }
 
-                console.log("user obj is %o", user);
-
                 jwt.sign({
                     data: user._id,
                     exp: Math.floor(Date.now() / 1000) + parseInt(JWT_EXPIRY)
