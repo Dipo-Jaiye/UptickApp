@@ -7,6 +7,7 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 var jwtopts = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: JWT_SECRET,
+    ignoreExpiration: false,
 };
 
 module.exports = {
