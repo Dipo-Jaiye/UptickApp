@@ -3,9 +3,9 @@
 ## Stack:
  - Node.js, Express, Mongoose ODM
  
-## Deployment link: the API is hosted [here](https://github.com/dipo-jaiye)
+## Deployment link: the API is hosted [here](https://dipouptick.cyclic.app)
 
-## Postman collection link is hosted [here](https://github.com/dipo-jaiye)
+## Postman collection link is hosted [here](https://documenter.getpostman.com/view/16059391/2s93CHta6L)
 
 ## ➔ Project topic:
 Build and deploy a simple API backend that allows users to create, read, update and delete notes.
